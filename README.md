@@ -1,2 +1,2 @@
 # cheese
-Template for writing tests
+Test runner
