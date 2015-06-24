@@ -1,0 +1,33 @@
+{
+  "author": "Radim Daniel Panek <rdpanek@gmail.com>",
+  "name": "test-stack-webdriver",
+  "description": "Webdriver is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
+  "keywords": [
+    "webdriver",
+    "selenium",
+    "webdriverio",
+    "testing",
+    "chrome"
+  ],
+  "homepage": "https://github.com/test-stack",
+  "license": "MIT",
+  "contributors": [
+    "Radim Daniel Panek <rdpanek@gmail.com>"
+  ],
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/test-stack/webdriver"
+  },
+  "bugs": {
+    "url": "https://github.com/test-stack/webdriver/issues"
+  },
+  "engines": {
+    "node": "0.10.33",
+    "coffee-script": "1.9.3",
+    "npm": "2.8.3"
+  },
+  "dependencies": {
+    "webdriverio": "^2.4.5"
+  }
+}
