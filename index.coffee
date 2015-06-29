@@ -11,6 +11,8 @@ EXPLICIT_WAIT_MS = 50000
 
 dependencies =
   exit: (client, done) -> client.end done
+  explicitWaitMs: EXPLICIT_WAIT_MS
+  errors: require './libs/errors'
 
 pos = [
   'site'
@@ -39,7 +41,7 @@ setup = ->
       client[nameOfHelper] = fn
 
   for po in pos
-    client[po] = require(ABSOLUTE_PATH+"/../../po/#{po}") client
+    client[po] = require(ABSOLUTE_PATH+"/../../po/#{po}") client, dependencies
 
 
   dependencies.client = client
