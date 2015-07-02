@@ -20,7 +20,7 @@
       "email": "rdpanek@gmail.com"
     }
   ],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/test-stack/webdriver.git"
@@ -36,29 +36,5 @@
   "dependencies": {
     "test-stack-helpers": "^1.0.3",
     "webdriverio": "^2.4.5"
-  },
-  "gitHead": "51aa4af4af7e019519d75ca8f4c0536e9982d99d",
-  "_id": "test-stack-webdriver@1.0.2",
-  "scripts": {},
-  "_shasum": "e7914bdb8ef7e81d72f45d8cf41d51ea372a9df6",
-  "_from": "test-stack-webdriver@1.0.2",
-  "_npmVersion": "2.9.1",
-  "_nodeVersion": "0.12.2",
-  "_npmUser": {
-    "name": "rdpanek",
-    "email": "rdpanek@gmail.com"
-  },
-  "dist": {
-    "shasum": "e7914bdb8ef7e81d72f45d8cf41d51ea372a9df6",
-    "tarball": "http://registry.npmjs.org/test-stack-webdriver/-/test-stack-webdriver-1.0.2.tgz"
-  },
-  "maintainers": [
-    {
-      "name": "rdpanek",
-      "email": "rdpanek@gmail.com"
-    }
-  ],
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/test-stack-webdriver/-/test-stack-webdriver-1.0.2.tgz",
-  "readme": "ERROR: No README data found!"
+  }
 }
