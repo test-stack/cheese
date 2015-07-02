@@ -4,6 +4,8 @@
 ## What is Webdriver
 Webdriver makes it easy to write smart, powerful and maintainable tests based on Selenium. Maintainability of the test is increased by using [CoffeeScript](http://coffeescript.org/).
 
+[![Join the chat at https://gitter.im/rdpanek/test-stack](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rdpanek/test-stack)
+
 ### How can such a test look
 
 /tests/addToBasket.test.coffee
