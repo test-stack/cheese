@@ -1,5 +1,5 @@
 # Test stack webdriver
-> This is part of test stack for writing SIT based on and [WebdriverIO](http://webdriver.io/). View full [test stack](https://github.com/test-stack)
+> This is part of test stack for writing SIT based on [WebdriverIO](http://webdriver.io/). View full [test stack](https://github.com/test-stack)
 
 ## What is Webdriver
 Webdriver makes it easy to write smart, powerful and maintainable tests based on Selenium. Maintainability of the test is increased by using [CoffeeScript](http://coffeescript.org/).
