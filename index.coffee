@@ -9,14 +9,29 @@ dependencies =
   explicitWaitMs: config.explicitWaitMs
   errors: require './libs/errors'
 
+{TestStackError} = dependencies.errors
+
 loadCustomConfigFile = ->
   if fs.existsSync config.customConfigFile
     for k, v of require config.customConfigFile
       config[k] = v 
 
+loadCapabilities = (capability) ->
+  originPathToCapabilities = "#{config.capabilitiesPath}/#{capability}.coffee"
+  return require originPathToCapabilities if fs.existsSync originPathToCapabilities
+
+  customPathToCapabilities = "#{config.customCapabilitiesPath}/#{capability}.coffee"
+  return require customPathToCapabilities if fs.existsSync customPathToCapabilities
+
+  throw new TestStackError """
+  Capability #{capability} not found in paths 
+  #{originPathToCapabilities} or #{customPathToCapabilities}
+  """
+
+
 setup = (capability) ->
   loadCustomConfigFile()
-  capabilities = require "#{config.capabilitiesPath}/#{capability}"
+  capabilities = loadCapabilities capability
   capabilities['waitforTimeout'] = config.explicitWaitMs
 
   client = webdriverio.remote capabilities
