@@ -2,25 +2,17 @@ webdriverio = require 'webdriverio'
 fs = require 'fs'
 path = require 'path'
 {helpers} = require 'test-stack-helpers'
-config = require './config'
 
 dependencies =
   exit: (client, done) -> client.end done
-  explicitWaitMs: config.explicitWaitMs
+  explicitWaitMs: process.env.EXPLICIT_WAIT_MS
   errors: require './libs/errors'
-
 {TestStackError} = dependencies.errors
 
-loadCustomConfigFile = ->
-  if fs.existsSync config.customConfigFile
-    for k, v of require config.customConfigFile
-      config[k] = v 
-
 loadCapabilities = (capability) ->
-  originPathToCapabilities = "#{config.capabilitiesPath}/#{capability}.coffee"
+  originPathToCapabilities = "#{__dirname}/capabilities/#{capability}.coffee"
   return require originPathToCapabilities if fs.existsSync originPathToCapabilities
-
-  customPathToCapabilities = "#{config.customCapabilitiesPath}/#{capability}.coffee"
+  customPathToCapabilities = "#{process.env.PWD}/#{process.env.CAPABILITIES_PATH}/#{capability}.coffee"
   return require customPathToCapabilities if fs.existsSync customPathToCapabilities
 
   throw new TestStackError """
@@ -28,11 +20,9 @@ loadCapabilities = (capability) ->
   #{originPathToCapabilities} or #{customPathToCapabilities}
   """
 
-
 setup = (capability) ->
-  loadCustomConfigFile()
-  capabilities = loadCapabilities capability
-  capabilities['waitforTimeout'] = config.explicitWaitMs
+  capabilities = loadCapabilities process.env.CAPABILITIES
+  capabilities['waitforTimeout'] = dependencies.explicitWaitMs
 
   client = webdriverio.remote capabilities
   client.on 'error', (e) ->
@@ -42,10 +32,10 @@ setup = (capability) ->
     for nameOfHelper, fn of helper
       client[nameOfHelper] = fn
 
-  if config.pageObjectsPath?
-    if fs.existsSync config.pageObjectsPath
-      for po in fs.readdirSync config.pageObjectsPath
-        client[path.basename po, '.coffee'] = require(config.pageObjectsPath+'/'+path.basename(po, '.coffee')) client, dependencies
+  pageObjects = process.env.PWD + process.env.PAGE_OBJECTS_PATH
+  if fs.existsSync pageObjects
+    for po in fs.readdirSync pageObjects
+      client[path.basename po, '.coffee'] = require(pageObjects+'/'+path.basename(po, '.coffee')) client, dependencies
 
 
   dependencies.client = client

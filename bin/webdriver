@@ -1,0 +1,60 @@
+#!/usr/bin/env coffee
+
+program = require 'commander'
+fs = require 'fs'
+EventEmitter = require('events').EventEmitter
+testRunnerEvent = new EventEmitter()
+
+DEFAULT_CAPABILITIES = 'chrome'
+
+# events
+testRunnerEvent.on 'missingTestCase', ->
+  console.error '  ------------------------- \n  Sorry, test case missing. \n ', '-------------------------'
+  console.log '  Examples:'
+  console.log ''
+  console.log '  Run test with test cate'
+  console.log '    $ ./node_modules/test-stack-webdriver/bin/webdriver someTestCase'
+  console.log ''
+  console.log '  Run test with test cate and with custom capabilities'
+  console.log "    $ ./node_modules/test-stack-webdriver/bin/webdriver someTestCase -c #{DEFAULT_CAPABILITIES}"
+  console.log ''
+  program.help()
+  process.exit 0
+
+testRunnerEvent.on 'missingConfigCson', ->
+  console.error '  ------------------------- \n  Sorry, /config.cson missing. \n ', '-------------------------'
+  console.log ''
+  console.log '  You must create in root directory cson.config. More information on https://github.com/test-stack/webdriver'
+  console.log ''
+  process.exit 0
+
+program
+  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+  .usage '<testCase> [options]'
+  .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
+
+program.parse process.argv
+
+# load custom config.cson
+process.config.ABSOLUTE_PATH = __dirname + '/../../..'
+process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
+
+(
+  fs.exists process.config.CONFIG, (exists) ->
+    testRunnerEvent.emit 'missingConfigCson' if !exists
+    require('cson-config').load process.config.CONFIG
+
+    args = program.args
+    if ( args.length > 1 ) or ( args.length is 0)
+      testRunnerEvent.emit 'missingTestCase'
+
+    cap = program.capabilities
+    process.env.CAPABILITIES = if cap then cap else DEFAULT_CAPABILITIES
+    process.env.CAPABILITIES_PATH = process.config.CAPABILITIES_PATH
+    process.env.PAGE_OBJECTS_PATH = process.config.PAGE_OBJECTS_PATH
+    process.env.EXPLICIT_WAIT_MS = process.config.EXPLICIT_WAIT_MS
+    process.env.TEST = process.config.TESTS_PATH + '/' + args[0] + '.test'
+
+
+    require '../runTest.coffee'
+)

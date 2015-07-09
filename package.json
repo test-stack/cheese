@@ -20,7 +20,7 @@
       "email": "rdpanek@gmail.com"
     }
   ],
-  "version": "1.1.2",
+  "version": "0.1.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/test-stack/webdriver.git"
@@ -33,31 +33,16 @@
     "coffee-script": "1.9.3",
     "npm": "2.8.3"
   },
+  "bin": {
+    "webdriver": "./bin/webdriver"
+  },
   "dependencies": {
+    "async": "^1.3.0",
+    "coffee-script": "1.9.3",
+    "commander": "^2.8.1",
+    "cson-config": "^0.1.12",
+    "mocha": "2.2.5",
     "test-stack-helpers": "^1.0.3",
     "webdriverio": "^2.4.5"
-  },
-  "gitHead": "51aa4af4af7e019519d75ca8f4c0536e9982d99d",
-  "_id": "test-stack-webdriver@1.1.0",
-  "scripts": {},
-  "_shasum": "92744e712b6dc9ce05e2941760782ad005d75404",
-  "_from": "test-stack-webdriver@1.1.0",
-  "_npmVersion": "2.12.0",
-  "_nodeVersion": "0.12.2",
-  "_npmUser": {
-    "name": "rdpanek",
-    "email": "rdpanek@gmail.com"
-  },
-  "dist": {
-    "shasum": "92744e712b6dc9ce05e2941760782ad005d75404",
-    "tarball": "http://registry.npmjs.org/test-stack-webdriver/-/test-stack-webdriver-1.1.0.tgz"
-  },
-  "maintainers": [
-    {
-      "name": "rdpanek",
-      "email": "rdpanek@gmail.com"
-    }
-  ],
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/test-stack-webdriver/-/test-stack-webdriver-1.1.0.tgz"
+  }
 }

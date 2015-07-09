@@ -1,0 +1,7 @@
+--reporter spec
+--ui bdd
+--compilers coffee:coffee-script/register
+--require coffee-script/register
+--timeout 70000
+--slow 2000
+--bail

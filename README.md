@@ -12,9 +12,9 @@ Webdriver makes it easy to write smart, powerful and maintainable tests based on
 ```javascript
 module.exports = (client) ->
 
-	eshop =
-		url: 'http://my.eshop.com'
-		product: 'Nikond D3200'
+  eshop =
+    url: 'http://my.eshop.com'
+    product: 'Nikond D3200'
 
   describe "Context of test", ->
 
@@ -40,13 +40,13 @@ module.exports = (client, depend) ->
   {
     login: (url) ->
 
-	    describe "Login page", ->
+      describe "Login page", ->
 
-	      it "open #{url}", (done) ->
-	        client.url url, done
+        it "open #{url}", (done) ->
+          client.url url, done
 
-	      it "wait for document ready state", (done) ->
-	        client.waitForDocumentReadyState client, done
+        it "wait for document ready state", (done) ->
+          client.waitForDocumentReadyState client, done
 
   }
 
@@ -57,7 +57,7 @@ module.exports = (client, depend) ->
 searchInput = 'input.search'
 
 module.exports = {
-	searchInput
+  searchInput
 }
 ```
 
@@ -70,12 +70,12 @@ module.exports = (client, depend) ->
   {
     findProduct: (product) ->
 
-	    describe "Find #{product}", ->
+      describe "Find #{product}", ->
 
-	      it "Type #{product} to search input", (done) ->
-	        client.addValue eshop.searchInput, product, done
+        it "Type #{product} to search input", (done) ->
+          client.addValue eshop.searchInput, product, done
 
-	      ...
+        ...
 
   }
 
@@ -86,7 +86,7 @@ module.exports = (client, depend) ->
 addButton = 'input.addToBasket'
 
 module.exports = {
-	addButton
+  addButton
 }
 ```
 
@@ -98,12 +98,12 @@ module.exports = (client, depend) ->
   {
     add: (product) ->
 
-	    describe "Add #{product} to basket", ->
+      describe "Add #{product} to basket", ->
 
-	      it "Click on add to basket Button", (done) ->
-	        client.click basket.addButton, done
+        it "Click on add to basket Button", (done) ->
+          client.click basket.addButton, done
 
-	      ...
+        ...
 
   }
 
@@ -126,8 +126,8 @@ capabilitiesPath = path.join absolutePath, '/capabilities'
 pageObjectsPath = path.join absolutePath, '/po'
 
 module.exports = {
-	capabilitiesPath
-	pageObjectsPath
+  capabilitiesPath
+  pageObjectsPath
 }
 ```
 
@@ -135,7 +135,7 @@ module.exports = {
 
 They allow you to set the browser type and its properties.
 
-/capabilities/myCapability.coffee
+/capabilities/docker.coffee
 
 ```javascript
 path = require 'path'
@@ -144,9 +144,10 @@ capabilities = require path.resolve __dirname + '../../node_modules/test-stack-w
 capabilities.desiredCapabilities['browserName'] = 'chrome'
 capabilities.desiredCapabilities['chromeOptions'] =
   args: [
-  	'start-maximized'
-  	'window-size=1280,800'
+    'start-maximized'
+    'window-size=1280,800'
   ]
+capabilities['host'] = '192.168.59.105'
 
 
 module.exports = capabilities
