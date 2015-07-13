@@ -37,12 +37,12 @@
     "webdriver": "./bin/webdriver"
   },
   "dependencies": {
-    "async": "^1.3.0",
+    "async": "1.3.0",
     "coffee-script": "1.9.3",
-    "commander": "^2.8.1",
-    "cson-config": "^0.1.12",
+    "commander": "2.8.1",
+    "cson-config": "0.1.12",
     "mocha": "2.2.5",
-    "test-stack-helpers": "^1.0.3",
-    "webdriverio": "^2.4.5"
+    "test-stack-helpers": "1.0.3",
+    "webdriverio": "2.4.5"
   }
 }
