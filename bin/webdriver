@@ -28,11 +28,16 @@ testRunnerEvent.on 'missingConfigCson', ->
   console.log ''
   process.exit 0
 
+testRunnerEvent.on 'wrongConfiguration', (explain) ->
+  console.error "  ------------------------- \n  Sorry, #{explain}. \n -------------------------"
+  process.exit 0
+
 program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage '<testCase> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
+  .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [2000] (Mochajs)'
 
 program.parse process.argv
 
@@ -51,10 +56,35 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
 
     # add mochajs params to execString
     execString = ''
-    mochajsParams = ['--bail']
+    mochajsParams = [
+      name: '--bail'
+      required: no
+    ,
+      name: '--timeout'
+      required: yes
+      minValue: ms = 5000
+      default: ms = 10000
+    ]
 
-    for mParams in mochajsParams
-      execString += " #{mParams}" if program[mParams.replace('--','')]
+    for switcher in mochajsParams
+
+      programOpt = program[switcher.name.replace('--','')]
+
+      # set default values
+      programOpt = switcher.default if !programOpt? && switcher.required is yes
+
+      if programOpt
+
+        # rules of switchers
+        if switcher.name is '--timeout'
+          message = "#{switcher.name} must be greater than #{switcher.minValue}"
+          testRunnerEvent.emit 'wrongConfiguration',message if programOpt < switcher.minValue
+
+        # add key
+        execString += " #{switcher.name}"
+
+        # and value. Example 2000ms for --timeout switcher
+        execString += " #{programOpt}" if !isNaN parseInt programOpt
 
     cap = program.capabilities
     process.env.EXEC_STRING = execString
