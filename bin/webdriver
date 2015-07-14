@@ -32,6 +32,7 @@ program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage '<testCase> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
+  .option '-b, --bail', "bail after first test failure (Mochajs)"
 
 program.parse process.argv
 
@@ -48,7 +49,15 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
     if ( args.length > 1 ) or ( args.length is 0)
       testRunnerEvent.emit 'missingTestCase'
 
+    # add mochajs params to execString
+    execString = ''
+    mochajsParams = ['--bail']
+
+    for mParams in mochajsParams
+      execString += " #{mParams}" if program[mParams.replace('--','')]
+
     cap = program.capabilities
+    process.env.EXEC_STRING = execString
     process.env.CAPABILITIES = if cap then cap else DEFAULT_CAPABILITIES
     process.env.CAPABILITIES_PATH = process.config.CAPABILITIES_PATH
     process.env.PAGE_OBJECTS_PATH = process.config.PAGE_OBJECTS_PATH
