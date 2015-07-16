@@ -10,10 +10,13 @@ async.waterfall [
       cb null
 
   (cb) ->
-    mochaOpts = " --opts #{__dirname}/mocha.opts"
     mochaString = """
     #{__dirname}/node_modules/.bin/mocha #{__dirname}/tests/blank.coffee \
-    #{mochaOpts}
+    --reporter spec \
+    --ui bdd \
+    --compilers coffee:coffee-script/register \
+    --require coffee-script/register \
+    #{process.env.EXEC_STRING}
     """
     exec mochaString, (error, stdout, stderr) ->
       console.error error if error

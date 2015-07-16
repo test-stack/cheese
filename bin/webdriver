@@ -8,7 +8,7 @@ testRunnerEvent = new EventEmitter()
 DEFAULT_CAPABILITIES = 'chrome'
 
 # events
-testRunnerEvent.on 'missingTestCase', ->
+missingTestCase = ->
   console.error '  ------------------------- \n  Sorry, test case missing. \n ', '-------------------------'
   console.log '  Examples:'
   console.log ''
@@ -19,19 +19,25 @@ testRunnerEvent.on 'missingTestCase', ->
   console.log "    $ ./node_modules/test-stack-webdriver/bin/webdriver someTestCase -c #{DEFAULT_CAPABILITIES}"
   console.log ''
   program.help()
-  process.exit 0
+  process.exit 1
 
-testRunnerEvent.on 'missingConfigCson', ->
+missingConfigCson = ->
   console.error '  ------------------------- \n  Sorry, /config.cson missing. \n ', '-------------------------'
   console.log ''
   console.log '  You must create in root directory cson.config. More information on https://github.com/test-stack/webdriver'
   console.log ''
-  process.exit 0
+  process.exit 1
+
+testRunnerEvent.on 'wrongConfiguration', (explain) ->
+  console.error "  ------------------------- \n  Sorry, #{explain}. \n -------------------------"
+  process.exit 1
 
 program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
   .usage '<testCase> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
+  .option '-b, --bail', "bail after first test failure (Mochajs)"
+  .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [2000] (Mochajs)'
 
 program.parse process.argv
 
@@ -41,14 +47,46 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
 
 (
   fs.exists process.config.CONFIG, (exists) ->
-    testRunnerEvent.emit 'missingConfigCson' if !exists
+    missingConfigCson() if !exists
     require('cson-config').load process.config.CONFIG
 
     args = program.args
-    if ( args.length > 1 ) or ( args.length is 0)
-      testRunnerEvent.emit 'missingTestCase'
+    missingTestCase() if ( args.length > 1 ) or ( args.length is 0)
+
+    # add mochajs params to execString
+    execString = ''
+    mochajsParams = [
+      name: 'bail'
+      required: no
+    ,
+      name: 'timeout'
+      required: yes
+      minValue: ms = 5000
+      default: ms = 10000
+    ]
+
+    for switcher in mochajsParams
+
+      programOpt = program[switcher.name]
+
+      # set default values
+      programOpt = switcher.default if !programOpt? && switcher.required is yes
+
+      if programOpt
+
+        # rules of switchers
+        if switcher.name is 'timeout'
+          message = "--#{switcher.name} must be greater than #{switcher.minValue}"
+          testRunnerEvent.emit 'wrongConfiguration',message if programOpt < switcher.minValue
+
+        # add key
+        execString += " --#{switcher.name}"
+
+        # and value. Example 2000ms for --timeout switcher
+        execString += " #{programOpt}" if !isNaN parseInt programOpt
 
     cap = program.capabilities
+    process.env.EXEC_STRING = execString
     process.env.CAPABILITIES = if cap then cap else DEFAULT_CAPABILITIES
     process.env.CAPABILITIES_PATH = process.config.CAPABILITIES_PATH
     process.env.PAGE_OBJECTS_PATH = process.config.PAGE_OBJECTS_PATH
