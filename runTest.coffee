@@ -16,7 +16,6 @@ async.waterfall [
     --ui bdd \
     --compilers coffee:coffee-script/register \
     --require coffee-script/register \
-    --timeout 70000 \
     #{process.env.EXEC_STRING}
     """
     exec mochaString, (error, stdout, stderr) ->
