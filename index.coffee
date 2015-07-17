@@ -16,7 +16,7 @@ loadCapabilities = (capability) ->
   return require customPathToCapabilities if fs.existsSync customPathToCapabilities
 
   throw new TestStackError """
-  Capability #{capability} not found in paths 
+  Capability #{capability} not found in paths
   #{originPathToCapabilities} or #{customPathToCapabilities}
   """
 
