@@ -37,7 +37,7 @@ program
   .usage '<testCase> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
-  .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [2000] (Mochajs)'
+  .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [5000] (Mochajs)'
 
 program.parse process.argv
 
@@ -51,7 +51,7 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
     require('cson-config').load process.config.CONFIG
 
     args = program.args
-    missingTestCase() if ( args.length > 1 ) or ( args.length is 0)
+    missingTestCase() unless args.length is 1
 
     # add mochajs params to execString
     execString = ''
