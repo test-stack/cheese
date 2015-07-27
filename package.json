@@ -43,6 +43,6 @@
     "cson-config": "0.1.12",
     "mocha": "2.2.5",
     "test-stack-helpers": "1.0.3",
-    "webdriverio": "2.4.5"
+    "webdriverio": "^3.1.0"
   }
 }
