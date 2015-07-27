@@ -1,1 +1,9 @@
+# created during build
 node_modules/*
+
+# OS metafiles
+.DS_Store
+
+# IDE metafiles
+.idea
+*.iml
