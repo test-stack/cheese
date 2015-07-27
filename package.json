@@ -5,6 +5,7 @@
   },
   "name": "test-stack-webdriver",
   "description": "Webdriver is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
+  "main": "index.coffee",
   "keywords": [
     "webdriver",
     "selenium",
