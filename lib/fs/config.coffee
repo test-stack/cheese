@@ -11,7 +11,9 @@ exports.findConfig = (cwd, logger) ->
   catch e
     throw new errors.FileSystemError e.message
   if CONFIG_NAME in files
-    return path.join cwd, CONFIG_NAME
+    configPath = path.join cwd, CONFIG_NAME
+    logger.info "Config was found: #{configPath}"
+    return configPath
   if cwd is path.sep
     errorMsg = "File #{CONFIG_NAME} was not found."
     logger.error errorMsg
