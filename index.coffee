@@ -1,47 +1,33 @@
-webdriverio = require 'webdriverio'
+cli = require 'commander'
 fs = require 'fs'
-path = require 'path'
-{helpers} = require 'test-stack-helpers'
 
-dependencies =
-  exit: (client, done) -> client.end done
-  explicitWaitMs: process.env.EXPLICIT_WAIT_MS
-  errors: require './libs/errors'
-{TestStackError} = dependencies.errors
+test = require './lib/test'
 
-loadCapabilities = (capability) ->
-  originPathToCapabilities = "#{__dirname}/capabilities/#{capability}.coffee"
-  return require originPathToCapabilities if fs.existsSync originPathToCapabilities
-  customPathToCapabilities = "#{process.env.PWD}/#{process.env.CAPABILITIES_PATH}/#{capability}.coffee"
-  return require customPathToCapabilities if fs.existsSync customPathToCapabilities
+VERSION = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).version
 
-  throw new TestStackError """
-  Capability #{capability} not found in paths 
-  #{originPathToCapabilities} or #{customPathToCapabilities}
-  """
+cli
+  .version VERSION
+  .option '-v, --verbose [level]', 'set verbosity level of log [warning]', 'warning'
 
-setup = (capability) ->
-  capabilities = loadCapabilities process.env.CAPABILITIES
-  capabilities['waitforTimeout'] = dependencies.explicitWaitMs
+cli
+  .command 'test <tag> [tags...]'
+  .description 'Executes test with matching tags.'
+  .option '-b, --bail', 'bail after first test failure'
+  .option '-c, --capability <capability>', 'capability that should be used for test execution'
+  .option '-e, --environment', 'environment in which run tests'
+  .option '-g, --grep <pattern>', 'run only tests matching pattern'
+  .option '--url', 'url that should be loaded at the start of test'
+  .option '--no-color', 'do not use colors in output'
+  .option '--no-exit', "don't close browser window after failure"
+  .action (tag, tags) ->
+    tags.unshift tag
+    test cli, tags
 
-  client = webdriverio.remote capabilities
-  client.on 'error', (e) ->
-    client.options.waitforTimeout = 500
+cli
+  .command 'init'
+  .description 'Initialize current directory for running tests.'
 
-  for helper in helpers
-    for nameOfHelper, fn of helper
-      client[nameOfHelper] = fn
+cli.parse process.argv
 
-  pageObjects = process.env.PWD + process.env.PAGE_OBJECTS_PATH
-  if fs.existsSync pageObjects
-    for po in fs.readdirSync pageObjects
-      client[path.basename po, '.coffee'] = require(pageObjects+'/'+path.basename(po, '.coffee')) client, dependencies
-
-
-  dependencies.client = client
-
-  return dependencies
-
-module.exports = {
-  setup
-}
+unless cli.args.length
+  cli.help()
