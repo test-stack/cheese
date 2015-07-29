@@ -7,10 +7,10 @@ VERSION = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).versi
 
 cli
   .version VERSION
-  .option '-v, --verbose [level]', 'set verbosity level of log [warning]', 'warning'
+  .option '-v, --verbose <level>', 'set verbosity level of log [warning]', 'warn'
 
 cli
-  .command 'test <tag> [tags...]'
+  .command 'test [tags...]'
   .description 'Executes test with matching tags.'
   .option '-b, --bail', 'bail after first test failure'
   .option '-c, --capability <capability>', 'capability that should be used for test execution'
@@ -19,9 +19,7 @@ cli
   .option '--url', 'url that should be loaded at the start of test'
   .option '--no-color', 'do not use colors in output'
   .option '--no-exit', "don't close browser window after failure"
-  .action (tag, tags) ->
-    tags.unshift tag
-    test cli, tags
+  .action (tags) -> test cli, tags
 
 cli
   .command 'init'
