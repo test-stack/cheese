@@ -7,7 +7,7 @@ VERSION = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).versi
 
 cli
   .version VERSION
-  .option '-v, --verbose <level>', 'set verbosity level of log [warning]', 'warn'
+  .option '-v, --verbose <level>', 'set verbosity level of log [warn]', 'warn'
 
 cli
   .command 'test [tags...]'
@@ -16,10 +16,12 @@ cli
   .option '-c, --capability <capability>', 'capability that should be used for test execution'
   .option '-e, --environment', 'environment in which run tests'
   .option '-g, --grep <pattern>', 'run only tests matching pattern'
-  .option '--url', 'url that should be loaded at the start of test'
+  .option '-t, --timeout <timeout>', 'mocha timeout in ms', 60000
+  .option '--url <url>', 'url that should be loaded at the start of test'
   .option '--no-color', 'do not use colors in output'
   .option '--no-exit', "don't close browser window after failure"
-  .action (tags) -> test cli, tags
+  .option '--no-screenshots', "don't take screenshots after fail"
+  .action test
 
 cli
   .command 'init'
