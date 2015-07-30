@@ -14,7 +14,7 @@ cli
   .description 'Executes test with matching tags.'
   .option '-b, --bail', 'bail after first test failure'
   .option '-c, --capability <capability>', 'capability that should be used for test execution'
-  .option '-e, --environment', 'environment in which run tests'
+  .option '-e, --environment <environment>', 'environment in which run tests'
   .option '-g, --grep <pattern>', 'run only tests matching pattern'
   .option '-t, --timeout <timeout>', 'mocha timeout in ms', 60000
   .option '--url <url>', 'url that should be loaded at the start of test'
