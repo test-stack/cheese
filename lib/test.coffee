@@ -15,14 +15,21 @@ module.exports = (tags, args) ->
   projectDir = path.dirname configPath
   config = csonConfig.load(configPath, toProcess=false)?.testStack or {}
 
+  # prepare screenshot dir
   screenDir = path.resolve projectDir, config.settings.screenDir or './screenshots'
   unless fs.existsSync screenDir
     logger.debug "Screenshot dir doesn't exists, creating: #{screenDir}"
     fs.mkdirSync screenDir
 
   configUtils.checkVersion config.version, args.parent['_version'], logger
-  args = _.extend config.defaultOptions, args
 
+  # merge defaults from config with cli options
+  envOptions = {}
+  if args.environment and config[args.environment]
+    envOptions = config[args.environment].defaultOptions
+  args = _.extend config.defaultOptions, envOptions, args
+
+  # init mocha
   mochaOpts = {
     bail: args.bail
     timeout: args.timeout
@@ -34,13 +41,14 @@ module.exports = (tags, args) ->
     mochaOpts.grep = args.grep
   mocha = new Mocha mochaOpts
 
+  # search for test files
   testDir = config.settings?.testDir
   testDir = if testDir then path.resolve projectDir, testDir else projectDir
-
   testFiles = testsUtils.find testDir, logger
   for file in testFiles
     mocha.addFile file
 
+  # init webdriver client
   webdriver.init args, logger, (err, client) ->
     if err
       logger.error err
@@ -58,6 +66,7 @@ module.exports = (tags, args) ->
         logger.debug "Invoking tests in #{file}"
         loadedTest()
 
+    # release the cracken!
     runner = mocha.run (failures) ->
       endTest = (err) ->
         if err
@@ -73,6 +82,7 @@ module.exports = (tags, args) ->
         logger.debug "Webdriver client session termination skipped."
       endTest()
 
+    # handle test failure
     runner.on 'fail', (test) ->
       return unless _.isObject client
       if args.screenshots
