@@ -14,6 +14,8 @@ module.exports = (tags, args) ->
   configPath = configUtils.findConfig process.cwd(), logger
   projectDir = path.dirname configPath
   config = csonConfig.load(configPath, toProcess=false)?.testStack or {}
+  if args.environment and config[args.environment]
+    config.settings = _.extend config.settings, config[args.environment].settings
 
   # prepare screenshot dir
   screenDir = path.resolve projectDir, config.settings.screenDir or './screenshots'
