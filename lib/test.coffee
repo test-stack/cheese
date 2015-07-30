@@ -75,6 +75,7 @@ module.exports = (tags, args) ->
 
     runner.on 'fail', (test) ->
       return unless _.isObject client
-      unless args.screenshots
+      if args.screenshots
+        webdriver.saveScreenshot client, screenDir, test, logger
+      else
         return logger.debug 'Taking screenshot after fail skipped.'
-      webdriver.saveScreenshot client, screenDir, test, logger
