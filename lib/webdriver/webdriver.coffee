@@ -17,10 +17,7 @@ exports.init = (args, logger, cb) ->
     if err
       logger.error 'Unable to instantiate webdriver client'
       return cb err
-    unless args.url
-      return cb null, client
-    client.url args.url, (err) ->
-      cb err, client
+    cb null, client
 
 exports.saveScreenshot = (client, screenDir, test, logger) ->
   logger.debug 'Taking screenshot after fail.'

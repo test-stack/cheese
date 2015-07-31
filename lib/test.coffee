@@ -55,7 +55,6 @@ module.exports = (tags, args) ->
     if err
       logger.error err
       process.exit 1
-    # TODO add option to init webdriver once for whole test/for each suite
 
     mocha.suite.on 'pre-require', (context) ->
       context.client = client
@@ -66,7 +65,10 @@ module.exports = (tags, args) ->
           logger.silly "Skipping #{file} because doesn't match with any tag."
           return
         logger.debug "Invoking tests in #{file}"
-        loadedTest()
+        suite = loadedTest()
+        suite.beforeAll (done) ->
+          return done() unless client and args.url
+          client.url args.url, done
 
     # release the cracken!
     runner = mocha.run (failures) ->
