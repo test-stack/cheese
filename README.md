@@ -154,3 +154,9 @@ module.exports = capabilities
 ```
 
 More information in the coming days
+
+### TODO
+
+- Support for addons
+- Add injecting of page objects
+- Prepare report from test results
