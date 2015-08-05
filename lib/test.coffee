@@ -71,25 +71,32 @@ module.exports = (tags, args) ->
           client.url args.url, done
 
     # release the cracken!
+    state = {
+      isTakingScreenshot: false
+    }
     runner = mocha.run (failures) ->
-      endTest = (err) ->
-        if err
-          logger.error 'Unable to terminate webdriver session!'
-          logger.error err
+      end = (err) ->
+        logger.error err if err
         logger.info "All test executed. No. of failures: #{failures}."
         process.exit failures
 
       if _.isObject client
-        if not failures or (failures and args.exit)
-          logger.debug 'Ending webdriver client session.'
-          return client.end endTest
-        logger.debug "Webdriver client session termination skipped."
-      endTest()
+        endSession = () ->
+          if state.isTakingScreenshot
+            logger.debug 'Webdriver client termination postponed - taking screenshot.'
+            return setTimeout endSession, 500
+          webdriver.endSession client, failures, args, logger, end
+
+        return endSession()
+      end()
 
     # handle test failure
     runner.on 'fail', (test) ->
       return unless _.isObject client
       if args.screenshots
-        webdriver.saveScreenshot client, screenDir, test, logger
+        state.isTakingScreenshot = true
+        webdriver.saveScreenshot client, screenDir, test, logger, (err) ->
+          logger.error err if err
+          state.isTakingScreenshot = false
       else
         return logger.debug 'Taking screenshot after fail skipped.'
