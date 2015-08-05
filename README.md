@@ -160,3 +160,6 @@ More information in the coming days
 - Support for addons
 - Add injecting of page objects
 - Prepare report from test results
+- load url if this option is specified by passing baseUrl parameter (http://webdriver.io/guide/getstarted/configuration.html)
+- set coloredLogs parameter to true/false based on color option
+- set waitforTimeout to little less than timeout option
