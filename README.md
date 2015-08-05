@@ -163,3 +163,4 @@ More information in the coming days
 - load url if this option is specified by passing baseUrl parameter (http://webdriver.io/guide/getstarted/configuration.html)
 - set coloredLogs parameter to true/false based on color option
 - set waitforTimeout to little less than timeout option
+- before exiting, check that any screenshot is properly saved
