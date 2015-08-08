@@ -45,7 +45,7 @@
     "recursive-readdir-sync": "^1.0.6",
     "semver": "^5.0.1",
     "underscore": "^1.8.3",
-    "webdriverio": "^3.1.0",
+    "webdriverio": "3.1.0",
     "winston": "^1.0.1"
   }
 }
