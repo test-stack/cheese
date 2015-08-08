@@ -47,6 +47,9 @@ module.exports = (tags, args) ->
   testDir = config.settings?.testDir
   testDir = if testDir then path.resolve projectDir, testDir else projectDir
   testFiles = testsUtils.find testDir, logger
+  unless testFiles.length
+    logger.error 'No test files were found.'
+    process.exit 1
   for file in testFiles
     mocha.addFile file
 
