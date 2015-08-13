@@ -1,6 +1,7 @@
 _ = require 'underscore'
 configUtils = require './fs/config'
 csonConfig = require 'cson-config'
+errors = require './errors'
 fs = require 'fs'
 Mocha = require 'mocha'
 path = require 'path'
@@ -11,14 +12,24 @@ winston = require './logging/winston'
 module.exports = (tags, args) ->
   logLevel = args.parent.verbose
   logger = winston.init logLevel, args
-  configPath = configUtils.findConfig process.cwd(), logger
+
+  # find config.cson file
+  try
+    configPath = configUtils.findConfig process.cwd(), logger
+  catch e
+    if e instanceof errors.ConfigError
+      return process.exit 1
+    throw e
+
+  # load config
   projectDir = path.dirname configPath
-  config = csonConfig.load(configPath, toProcess=false)?.testStack or {}
+  config = csonConfig.load(configPath, toProcess=false)?.harness
+  config = {} unless _.isObject config
   if args.environment and config[args.environment]
     config.settings = _.extend config.settings, config[args.environment].settings
 
   # prepare screenshot dir
-  screenDir = path.resolve projectDir, config.settings.screenDir or './screenshots'
+  screenDir = path.resolve projectDir, config.settings?.screenDir or './screenshots'
   unless fs.existsSync screenDir
     logger.debug "Screenshot dir doesn't exists, creating: #{screenDir}"
     fs.mkdirSync screenDir
@@ -29,7 +40,7 @@ module.exports = (tags, args) ->
   envOptions = {}
   if args.environment and config[args.environment]
     envOptions = config[args.environment].defaultOptions
-  args = _.extend config.defaultOptions, envOptions, args
+  args = _.extend config.defaultOptions or {}, envOptions, args
 
   # init mocha
   mochaOpts = {
