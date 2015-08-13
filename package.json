@@ -3,9 +3,8 @@
     "name": "Radim Daniel Panek",
     "email": "rdpanek@gmail.com"
   },
-  "name": "test-stack-webdriver",
-  "description": "Webdriver is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
-  "main": "index.coffee",
+  "name": "harness",
+  "description": "Harness is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
   "keywords": [
     "webdriver",
     "selenium",
@@ -19,6 +18,10 @@
     {
       "name": "Radim Daniel Panek",
       "email": "rdpanek@gmail.com"
+    },
+    {
+      "name": "Jaroslav Kubíček",
+      "email": "jaroslav.kubicek@gmail.com"
     }
   ],
   "version": "0.1.3",
@@ -35,7 +38,7 @@
     "npm": "2.8.3"
   },
   "bin": {
-    "webdriver": "./bin/webdriver"
+    "harness": "./index.coffee"
   },
   "dependencies": {
     "coffee-script": "1.9.3",
