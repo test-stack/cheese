@@ -1,8 +1,9 @@
-# Test stack webdriver
+# Test stack - Harness
 > This is part of test stack for writing SIT based on [WebdriverIO](http://webdriver.io/). View full [test stack](https://github.com/test-stack)
 
-## What is Webdriver
-Webdriver makes it easy to write smart, powerful and maintainable tests based on Selenium. Maintainability of the test is increased by using [CoffeeScript](http://coffeescript.org/).
+## What is Harness
+Harness makes it easy to write smart, powerful and maintainable tests based on Selenium 
+using Mocha framework and page object design pattern.
 
 [![Join the chat at https://gitter.im/rdpanek/test-stack](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rdpanek/test-stack)
 
@@ -24,6 +25,54 @@ module.exports = (client) ->
 
     client.basket.add eshop.product
 ```
+
+### Getting started
+
+1) Install this project via `npm install` as dependency of your project
+2) Create file `config.cson` in root of your project
+3) Optionally set your custom settings in `config.cson`:
+
+```
+harness:
+  settings:
+    screenDir: './screens' # screenshots will be saved to screens subdirectory
+```
+
+4) Create directory named `test` and there place file with `*.test.coffee` or `*.test.js` extension
+5) Write your test and place it into exported function as it's described above:
+
+```
+module.exports = () ->
+  describe 'first test', ->
+    it 'should something test'
+```
+
+6) Run your test by executing `harness`, for example `./node_modules/.bin/harness test`
+7) If you want filter your tests by tags, associate appropriate list of tags with each test as follow:
+
+```
+module.exports = () ->
+  describe 'first test', ->
+    it 'should something test'
+  ...
+  
+module.exports.tags = [
+  'foo'
+  'bar'
+]
+```
+
+8) To run test that match provided tags, run: `./node_modules/.bin/harness test foo baz`
+  - only tests that contain tag foo or bar will be executed
+9) Use webdriver.io client, by specifying capability option: `./node_modules/.bin/harness test -c chrome`
+  - then you can use global variable `client` to call methods of webdriver.io:
+  
+```
+  it 'wait for load', (done) ->
+    client.waitForExist 'selector', done
+```
+  - **HINT** with `--url` option you don't need to specify which url to load before first step, provided url
+  will be automatically loaded before test
 
 ### PageObjects
 
@@ -111,25 +160,6 @@ module.exports = (client, depend) ->
 
 > Declarative writing tests are clear with high maintainability.
 
-### Configuration
-
-This file is right place for custom configuration.
-
-config.coffee
-```javascript
-path = require 'path'
-
-absolutePath = __dirname
-
-capabilitiesPath = path.join absolutePath, '/capabilities'
-
-pageObjectsPath = path.join absolutePath, '/po'
-
-module.exports = {
-  capabilitiesPath
-  pageObjectsPath
-}
-```
 
 ### Capabilities
 
