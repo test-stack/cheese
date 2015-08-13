@@ -1,3 +1,4 @@
+#!/usr/bin/env coffee
 cli = require 'commander'
 fs = require 'fs'
 
