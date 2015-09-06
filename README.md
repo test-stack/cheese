@@ -31,124 +31,136 @@ Actually we support functional E2E and integration tests and non-functional perf
 You can write tests way, you're used to. Or, you can use pageObjects and mappingObjects.
 Every Test Case contains procedures, which called webdriver and control web browser. These procedures called page Object describes behavior of Test Case, allowed write what browser will be doing, not how. This is the main access for writing maintainable tests. These Test Cases can then be easily read and edited by anyone.
 
-### How can such a test look
+#### PageObjects
+includes passage definition part of the website or activities on website. Defined procedure or activity is small and unique. Never describe multiple processes or activities.
 
-/tests/addToBasket.test.coffee
-```javascript
-module.exports = (client) ->
+For example, we want write of test for buy book on Amazon. Our test will be start at home page of Amazon `http://www.amazon.com/`. We see several things, search input, try today array, related items, recommendations for you, etc. We focus on search input, because our test, this element will use to search. Ability search is action on the website and this is pageObject.
+![Amazon search input](https://raw.githubusercontent.com/test-stack/harness/1fd963d3acbd4faf2e81229ac27f0aaa023f8014/docs/AmazonSearchInput.png)
 
-  eshop =
-    url: 'http://my.eshop.com'
-    product: 'Nikond D3200'
+**Create first page object called Open amazon website**
+Our first page object will be can write name of book to input search and clicks on button with magnifier icon. This page object you can use, if the last test step is at home page. Page object don't include an expectation only verification unchanging state, for example title of search page.
 
-  describe "Context of test", ->
-
-    client.loginPage.login eshop.url
-
-    client.eshop.findProduct eshop.product
-
-    client.basket.add eshop.product
-```
-
-### PageObjects
-
-These methods are [PageObjects](http://martinfowler.com/bliki/PageObject.html)
-```javascript
-.loginPage.login(), eshop.findProduct() and eshop.addToBasket()
-```
-
-/po/loginPage/loginPage.coffee
+Let's a write `./pageObjects/amazon.coffee`
 ```javascript
 module.exports = (client, depend) ->
   {TestError} = depend.errors
+  {expect} = require 'chai'
 
   {
-    login: (url) ->
 
-      describe "Login page", ->
+    open: ->
 
-        it "open #{url}", (done) ->
+      url = "http://www.amazon.com"
+      homePageTitle = "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more"
+
+      describe "Open Amazon website", ->
+
+        it "Given open home page #{url}", (done) ->
           client.url url, done
 
-        it "wait for document ready state", (done) ->
+        it "When wait for document ready state", (done) ->
           client.waitForDocumentReadyState client, done
 
+        it "Then title of home page is #{homePageTitle}", (done) ->
+          client.getTitle().then (title) ->
+            try
+              expect(title).to.equal homePageTitle
+            catch e
+              return done new TestError e
+
+            done()
   }
+```
+First load the dependency, TestError for describe of error and chaijs for expected value. [ChaiJS](http://chaijs.com/api/bdd/) is cool BDD / TDD assertion library. Then we defined `amazon.url` and `homePageTitle`. This page object contains describe of way, how open home page of Amazon. This describe is in `open` method. The `describe` and `it` methods is hooks of [Mochajs](http://mochajs.org/). To Harness means `describe` describe, what method `open` will be doing. Method `it` is test step and for Harness it's how will be doing. Test step `And wait for document ready state` is loaded from [test-stack-helpers](https://github.com/test-stack/helpers).
 
+**Create second page object called Search title by type**
+Our second page object will be write name of book to input search, select *Books* from select and clicks on button with magnifier icon. This page object you can use, if the last test step is at home page. Page object don't include an expectation only verification unchanging state, for example title of search page.
+
+Let's add next page object `./pageObjects/amazon.coffee`
+```javascript
+    search: (typeSearch, title) ->
+
+      AVAILABLE_TYPES_OF_SEARCH = [
+        'Books'
+      ]
+
+      expectedTitle = "Amazon.com: #{title}: #{typeSearch}"
+
+      describe "Search #{typeSearch} #{title}", ->
+
+        it "Given type of search #{typeSearch} is available", (done) ->
+          return done new TestError "Type of search #{typeSearch} isn't available." if typeSearch not in AVAILABLE_TYPES_OF_SEARCH
+          done()
+
+        it "And select #{typeSearch} from type of search", (done) ->
+          client.click "//select[@id='searchDropdownBox']"
+          .click "//option[contains(text(), 'Books')]", done
+
+        it "And type #{title}", (done) ->
+          client.click "//input[@id='twotabsearchtextbox']"
+          .keys title, done
+
+        it "When click on button with magnifier icon", (done) ->
+          client.click "div.nav-search-submit input.nav-input", done
+
+        it "And wait for document ready state", (done) ->
+          client.waitForDocumentReadyState client, done
+
+        it "Then title of home page is #{expectedTitle}", (done) ->
+          client.getTitle().then (title) ->
+            try
+              expect(title).to.equal expectedTitle
+            catch e
+              return done new TestError e
+
+            done()
 ```
 
-/po/eshop/elementsMap.coffee
+**Use page objects in test case**
+These page objects are defined in test case
+
+Let's create test case `./tests/amazon.coffee`
 ```javascript
-searchInput = 'input.search'
+module.exports = ->
 
-module.exports = {
-  searchInput
-}
-```
+  describe "Find Selenium WebDriver Practical Guide book", ->
 
-/po/eshop/eshop.coffee
-```javascript
-eshop = require './elementsMap'
-module.exports = (client, depend) ->
-  {TestError} = depend.errors
+    client.amazon.open()
 
-  {
-    findProduct: (product) ->
-
-      describe "Find #{product}", ->
-
-        it "Type #{product} to search input", (done) ->
-          client.addValue eshop.searchInput, product, done
-
-        ...
-
-  }
-
-```
-
-/po/basket/elementsMap.coffee
-```javascript
-addButton = 'input.addToBasket'
-
-module.exports = {
-  addButton
-}
-```
-
-/po/basket/basket.coffee
-```javascript
-basket = require './elementsMap'
-module.exports = (client, depend) ->
-
-  {
-    add: (product) ->
-
-      describe "Add #{product} to basket", ->
-
-        it "Click on add to basket Button", (done) ->
-          client.click basket.addButton, done
-
-        ...
-
-  }
-
+    client.amazon.search "Books", "Selenium WebDriver Practical Guide"
 ```
 
 > Declarative writing tests are clear with high maintainability.
 
-### Configuration
+### How to install
+
+#### via npm Linux
+```bash
+# create directory
+mkdir amazonTests
+
+# entry to the directory
+cd amazonTests
+
+# Interactively create a package.json file, more information https://docs.npmjs.com/cli/init
+npm init
+
+# Download Harness
+npm i test-stack-harness --save
+```
+
+#### Configuration
 
 This file is right place for custom configuration.
 
-config.cson
+./config.cson
 ```javascript
-CAPABILITIES_PATH: '/capabilities'
-PAGE_OBJECTS_PATH: '/page-objects'
-TESTS_PATH: '/tests'
 EXPLICIT_WAIT_MS: 10000
 ```
 
-### Capabilities
+Then create directories `./tests` and `./pageObjects`
+
+#### Capabilities
 
 They allow you to set the browser type and its properties.
 
@@ -172,5 +184,28 @@ module.exports = capabilities
 
 ### Run
 ```
-./node_modules/test-stack-harness/node_modules/.bin/coffee ./node_modules/test-stack-harness/bin/harness addToBasket -c dockerChrome
+./node_modules/test-stack-harness/node_modules/.bin/coffee ./node_modules/test-stack-harness/bin/harness amazon -c chrome -t 10000
+```
+
+#### Available commands
+```bash
+ Examples:
+
+  Run test with test cate
+    $ ./node_modules/test-stack-harness/bin/harness someTestCase
+
+  Run test with test cate and with custom capabilities
+    $ ./node_modules/test-stack-harness/bin/harness someTestCase -c chrome
+
+
+  Usage: harness <testCase> [options]
+
+  Options:
+
+    -h, --help                       output usage information
+    -V, --version                    output the version number
+    -c, --capabilities <capability>  for example 'chrome' - chrome is default value
+    -b, --bail                       bail after first test failure (Mochajs)
+    -t, --timeout <ms>               set test-case timeout in milliseconds [5000] (Mochajs)
+    -R, --reporter <name>            set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'
 ```
