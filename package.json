@@ -4,7 +4,7 @@
     "email": "rdpanek@gmail.com"
   },
   "name": "test-stack-harness",
-  "description": "Webdriver is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
+  "description": "Harness is part of test stack for writing system tests based on Selenium Webdriver and WebdriverIO",
   "keywords": [
     "webdriver",
     "selenium",
@@ -38,12 +38,13 @@
   },
   "dependencies": {
     "async": "1.3.0",
+    "chai": "^3.2.0",
     "coffee-script": "1.9.3",
     "commander": "2.8.1",
     "cson-config": "0.1.12",
     "mocha": "^2.2.5",
     "test-stack-helpers": "1.0.3",
-    "test-stack-reporter": "0.0.1",
+    "test-stack-reporter": "0.0.2",
     "webdriverio": "2.4.5"
   }
 }
