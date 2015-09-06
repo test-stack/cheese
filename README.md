@@ -115,27 +115,19 @@ module.exports = (client, depend) ->
 
 This file is right place for custom configuration.
 
-config.coffee
+config.cson
 ```javascript
-path = require 'path'
-
-absolutePath = __dirname
-
-capabilitiesPath = path.join absolutePath, '/capabilities'
-
-pageObjectsPath = path.join absolutePath, '/po'
-
-module.exports = {
-  capabilitiesPath
-  pageObjectsPath
-}
+CAPABILITIES_PATH: '/capabilities'
+PAGE_OBJECTS_PATH: '/page-objects'
+TESTS_PATH: '/tests'
+EXPLICIT_WAIT_MS: 10000
 ```
 
 ### Capabilities
 
 They allow you to set the browser type and its properties.
 
-/capabilities/docker.coffee
+/capabilities/dockerChrome.coffee
 
 ```javascript
 path = require 'path'
@@ -153,4 +145,7 @@ capabilities['host'] = '192.168.59.105'
 module.exports = capabilities
 ```
 
-More information in the coming days
+### Run
+```
+./node_modules/test-stack-harness/node_modules/.bin/coffee ./node_modules/test-stack-harness/bin/harness addToBasket -c dockerChrome
+```

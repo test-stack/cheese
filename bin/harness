@@ -13,10 +13,10 @@ missingTestCase = ->
   console.log '  Examples:'
   console.log ''
   console.log '  Run test with test cate'
-  console.log '    $ ./node_modules/test-stack-webdriver/bin/webdriver someTestCase'
+  console.log '    $ ./node_modules/test-stack-harness/bin/harness someTestCase'
   console.log ''
   console.log '  Run test with test cate and with custom capabilities'
-  console.log "    $ ./node_modules/test-stack-webdriver/bin/webdriver someTestCase -c #{DEFAULT_CAPABILITIES}"
+  console.log "    $ ./node_modules/test-stack-harness/bin/harness someTestCase -c #{DEFAULT_CAPABILITIES}"
   console.log ''
   program.help()
   process.exit 1
@@ -24,7 +24,7 @@ missingTestCase = ->
 missingConfigCson = ->
   console.error '  ------------------------- \n  Sorry, /config.cson missing. \n ', '-------------------------'
   console.log ''
-  console.log '  You must create in root directory cson.config. More information on https://github.com/test-stack/webdriver'
+  console.log '  You must create in root directory cson.config. More information on https://github.com/test-stack/harness'
   console.log ''
   process.exit 1
 
@@ -38,6 +38,7 @@ program
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
   .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [5000] (Mochajs)'
+  .option '-R, --reporter <name>', "set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'"
 
 program.parse process.argv
 
@@ -59,11 +60,17 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
       name: 'bail'
       required: no
     ,
+      name: 'reporter'
+      required: yes
+      default: 'spec'
+    ,
       name: 'timeout'
       required: yes
       minValue: ms = 5000
       default: ms = 10000
     ]
+
+    runnerArgs = {}
 
     for switcher in mochajsParams
 
@@ -78,21 +85,17 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
         if switcher.name is 'timeout'
           message = "--#{switcher.name} must be greater than #{switcher.minValue}"
           testRunnerEvent.emit 'wrongConfiguration',message if programOpt < switcher.minValue
+          runnerArgs[switcher.name] = programOpt if !isNaN parseInt programOpt
 
-        # add key
-        execString += " --#{switcher.name}"
-
-        # and value. Example 2000ms for --timeout switcher
-        execString += " #{programOpt}" if !isNaN parseInt programOpt
+        else
+          runnerArgs[switcher.name] = programOpt
 
     cap = program.capabilities
-    process.env.EXEC_STRING = execString
-    process.env.CAPABILITIES = if cap then cap else DEFAULT_CAPABILITIES
-    process.env.CAPABILITIES_PATH = process.config.CAPABILITIES_PATH
-    process.env.PAGE_OBJECTS_PATH = process.config.PAGE_OBJECTS_PATH
     process.env.EXPLICIT_WAIT_MS = process.config.EXPLICIT_WAIT_MS
-    process.env.TEST = process.config.TESTS_PATH + '/' + args[0] + '.test'
+    runnerArgs['pageObjectsPath'] = process.config.PAGE_OBJECTS_PATH
+    runnerArgs['capabilities'] = if cap then cap else DEFAULT_CAPABILITIES
+    runnerArgs['testCase'] = args[0]
 
 
-    require '../runTest.coffee'
+    require('../runTest.coffee')(runnerArgs)
 )
