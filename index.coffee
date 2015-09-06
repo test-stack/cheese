@@ -34,10 +34,10 @@ setup = (args) ->
     for nameOfHelper, fn of helper
       client[nameOfHelper] = fn
 
-  pageObjects = process.env.PWD + args.pageObjectsPath
-  if fs.existsSync pageObjects
-    for po in fs.readdirSync pageObjects
-      client[path.basename po, '.coffee'] = require(pageObjects+'/'+path.basename(po, '.coffee')) client, dependencies
+  pageObjectsPath = "#{path.normalize __dirname + '/../../pageObjects/'}"
+  if fs.existsSync pageObjectsPath
+    for po in fs.readdirSync pageObjectsPath
+      client[path.basename po, '.coffee'] = require(pageObjectsPath+'/'+path.basename(po, '.coffee')) client, dependencies
 
 
   dependencies.client = client

@@ -92,7 +92,6 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
 
     cap = program.capabilities
     process.env.EXPLICIT_WAIT_MS = process.config.EXPLICIT_WAIT_MS
-    runnerArgs['pageObjectsPath'] = process.config.PAGE_OBJECTS_PATH
     runnerArgs['capabilities'] = if cap then cap else DEFAULT_CAPABILITIES
     runnerArgs['testCase'] = args[0]
 
