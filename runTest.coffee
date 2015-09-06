@@ -9,8 +9,8 @@ module.exports = (args) ->
   testPath = "#{path.normalize __dirname + '/../../tests/'}#{args.testCase}.test.coffee"
   dependencies = require('test-stack-harness').setup args
 
-  dependencies.client.init (err) ->
-    dependencies.client.session (sessionErr, sessionRes) ->
+  dependencies.client.init (clientErr) ->
+    dependencies.client.session (sessionclientErr, sessionRes) ->
 
       mocha = new Mocha
         ui: "bdd"
@@ -26,7 +26,8 @@ module.exports = (args) ->
         if args.reporter is 'elastic'
           reporter.send
             harness: 'testStart'
-            sessionId: sessionRes.sessionId
+            sessionId: if !clientErr? then sessionRes.sessionId else null
+            err: if clientErr? then clientErr.toString() else null
 
       mocha.suite.on 'require', (loadedTest, file) ->
         suite = loadedTest()
