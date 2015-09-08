@@ -13,10 +13,10 @@ missingTestCase = ->
   console.log '  Examples:'
   console.log ''
   console.log '  Run test with test cate'
-  console.log '    $ ./node_modules/test-stack-harness/bin/harness someTestCase'
+  console.log '    $ ./node_modules/test-stack-harness/bin/harness someTag'
   console.log ''
   console.log '  Run test with test cate and with custom capabilities'
-  console.log "    $ ./node_modules/test-stack-harness/bin/harness someTestCase -c #{DEFAULT_CAPABILITIES}"
+  console.log "    $ ./node_modules/test-stack-harness/bin/harness someTag -c #{DEFAULT_CAPABILITIES}"
   console.log ''
   program.help()
   process.exit 1
@@ -34,7 +34,7 @@ testRunnerEvent.on 'wrongConfiguration', (explain) ->
 
 program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
-  .usage '<testCase> [options]'
+  .usage '<someTag> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
   .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [5000] (Mochajs)'
@@ -93,7 +93,7 @@ process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
     cap = program.capabilities
     process.env.EXPLICIT_WAIT_MS = process.config.EXPLICIT_WAIT_MS
     runnerArgs['capabilities'] = if cap then cap else DEFAULT_CAPABILITIES
-    runnerArgs['testCase'] = args[0]
+    runnerArgs['runBy'] = args[0]
 
 
     require('../runTest.coffee')(runnerArgs)

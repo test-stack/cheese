@@ -6,8 +6,16 @@ path = require 'path'
 
 module.exports = (args) ->
 
-  testPath = "#{path.normalize __dirname + '/../../tests/'}#{args.testCase}.test.coffee"
   dependencies = require('test-stack-harness').setup args
+
+  safelyExitWebdriver = (cb) ->
+    dependencies.exit dependencies.client, cb
+
+  process.on 'uncaughtException', (err) ->
+    safelyExitWebdriver ->
+      console.error (new Date).toUTCString() + ' uncaughtException:', err.message
+      console.error err.stack
+      process.exit 1
 
   dependencies.client.init (clientErr) ->
     dependencies.client.session (sessionclientErr, sessionRes) ->
@@ -19,7 +27,8 @@ module.exports = (args) ->
         require: "coffee-script/register"
         timeout: args.timeout
 
-      mocha.addFile testPath
+      require('./libs/findTestCase').find args.runBy, (testCases) ->
+        mocha.addFile tc for tc in testCases if testCases.length != 0
 
       mocha.suite.on 'pre-require', (context) ->
         context.client = dependencies.client
@@ -35,6 +44,6 @@ module.exports = (args) ->
           return done()
 
       mocha.run (failures) ->
-        dependencies.exit dependencies.client, ->
+        safelyExitWebdriver ->
           process.on 'exit', ->
             process.exit failures

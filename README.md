@@ -4,7 +4,7 @@
 ## Why use Harness
 Harness allowed it easy to write smart, powerful and maintainable tests based on Selenium. Maintainability of the test is increased by using [CoffeeScript](http://coffeescript.org/).
 
-[![Join the chat at https://gitter.im/test-stack/harness](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rdpanek/test-stack)
+[![Join the chat at https://gitter.im/test-stack/harness](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/test-stack/harness)
 
 ## Infrastructure of test stack
 ![Infrastructure of test stack](https://raw.githubusercontent.com/test-stack/harness/3e8f12705ebd5ccf5260b6ded8a51cad1e6dab7a/docs/TestStackInfrastructure.png)
@@ -184,28 +184,26 @@ module.exports = capabilities
 
 ### Run
 ```
-./node_modules/test-stack-harness/node_modules/.bin/coffee ./node_modules/test-stack-harness/bin/harness amazon -c chrome -t 10000
+./node_modules/test-stack-harness/node_modules/.bin/coffee ./node_modules/test-stack-harness/bin/harness booksTag -c chrome -t 10000
 ```
 
 #### Available commands
 ```bash
- Examples:
+Run test with test cate
+  $ ./node_modules/test-stack-harness/bin/harness someTag
 
-  Run test with test cate
-    $ ./node_modules/test-stack-harness/bin/harness someTestCase
-
-  Run test with test cate and with custom capabilities
-    $ ./node_modules/test-stack-harness/bin/harness someTestCase -c chrome
+Run test with test cate and with custom capabilities
+  $ ./node_modules/test-stack-harness/bin/harness someTag -c chrome
 
 
-  Usage: harness <testCase> [options]
+Usage: harness <someTag> [options]
 
-  Options:
+Options:
 
-    -h, --help                       output usage information
-    -V, --version                    output the version number
-    -c, --capabilities <capability>  for example 'chrome' - chrome is default value
-    -b, --bail                       bail after first test failure (Mochajs)
-    -t, --timeout <ms>               set test-case timeout in milliseconds [5000] (Mochajs)
-    -R, --reporter <name>            set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'
+  -h, --help                       output usage information
+  -V, --version                    output the version number
+  -c, --capabilities <capability>  for example 'chrome' - chrome is default value
+  -b, --bail                       bail after first test failure (Mochajs)
+  -t, --timeout <ms>               set test-case timeout in milliseconds [5000] (Mochajs)
+  -R, --reporter <name>            set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'
 ```
