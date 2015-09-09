@@ -17,8 +17,16 @@ find = (runBy, cb) ->
       {tags} = require testCaseFile
       if tags != undefined
 
-        # find by single tag strategy
-        testCases.push testCaseFile if runBy in tags
+        if runBy.match /&/
+          for _runBy in runBy.split '&'
+            if _runBy in tags
+              testCases.push testCaseFile
+              break
+
+        else
+          # find by single tag strategy
+          testCases.push testCaseFile if runBy in tags
+
 
     return cb testCases if i is files.length - 1
 

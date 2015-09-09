@@ -189,10 +189,13 @@ module.exports = capabilities
 
 #### Available commands
 ```bash
-Run test with test cate
+Find and run test case via single tag
   $ ./node_modules/test-stack-harness/bin/harness someTag
 
-Run test with test cate and with custom capabilities
+Find and run test cases via tags
+  $ ./node_modules/test-stack-harness/bin/harness 'basket&release3'
+
+Find and run test case with custom capabilities
   $ ./node_modules/test-stack-harness/bin/harness someTag -c chrome
 
 

@@ -12,10 +12,13 @@ missingTestCase = ->
   console.error '  ------------------------- \n  Sorry, test case missing. \n ', '-------------------------'
   console.log '  Examples:'
   console.log ''
-  console.log '  Run test with test cate'
+  console.log '  Find and run test case via single tag'
   console.log '    $ ./node_modules/test-stack-harness/bin/harness someTag'
   console.log ''
-  console.log '  Run test with test cate and with custom capabilities'
+  console.log '  Find and run test cases via tags'
+  console.log "    $ ./node_modules/test-stack-harness/bin/harness 'basket&release3'"
+  console.log ''
+  console.log '  Find and run test case with custom capabilities'
   console.log "    $ ./node_modules/test-stack-harness/bin/harness someTag -c #{DEFAULT_CAPABILITIES}"
   console.log ''
   program.help()
