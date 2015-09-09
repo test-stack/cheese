@@ -17,33 +17,37 @@ module.exports = (args) ->
       console.error err.stack
       process.exit 1
 
-  dependencies.client.init (clientErr) ->
-    dependencies.client.session (sessionclientErr, sessionRes) ->
+  require('./libs/findTestCase').find args.runBy, (testCases) ->
+    if testCases.length is 0
+      console.log 'Test case has not found.'
+      process.exit 0
 
-      mocha = new Mocha
-        ui: "bdd"
-        reporter: if args.reporter is 'elastic' then reporter.reporter else args.reporter
-        compilers: "coffee:coffee-script/register"
-        require: "coffee-script/register"
-        timeout: args.timeout
+    dependencies.client.init (clientErr) ->
+      dependencies.client.session (sessionclientErr, sessionRes) ->
 
-      require('./libs/findTestCase').find args.runBy, (testCases) ->
+        mocha = new Mocha
+          ui: "bdd"
+          reporter: if args.reporter is 'elastic' then reporter.reporter else args.reporter
+          compilers: "coffee:coffee-script/register"
+          require: "coffee-script/register"
+          timeout: args.timeout
+
         mocha.addFile tc for tc in testCases if testCases.length != 0
 
-      mocha.suite.on 'pre-require', (context) ->
-        context.client = dependencies.client
-        if args.reporter is 'elastic'
-          reporter.send
-            harness: 'testStart'
-            sessionId: if !clientErr? then sessionRes.sessionId else null
-            err: if clientErr? then clientErr.toString() else null
+        mocha.suite.on 'pre-require', (context) ->
+          context.client = dependencies.client
+          if args.reporter is 'elastic'
+            reporter.send
+              harness: 'testStart'
+              sessionId: if !clientErr? then sessionRes.sessionId else null
+              err: if clientErr? then clientErr.toString() else null
 
-      mocha.suite.on 'require', (loadedTest, file) ->
-        suite = loadedTest()
-        suite.beforeAll (done) ->
-          return done()
+        mocha.suite.on 'require', (loadedTest, file) ->
+          suite = loadedTest()
+          suite.beforeAll (done) ->
+            return done()
 
-      mocha.run (failures) ->
-        safelyExitWebdriver ->
-          process.on 'exit', ->
-            process.exit failures
+        mocha.run (failures) ->
+          safelyExitWebdriver ->
+            process.on 'exit', ->
+              process.exit failures
