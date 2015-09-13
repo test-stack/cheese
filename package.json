@@ -20,7 +20,7 @@
       "email": "rdpanek@gmail.com"
     }
   ],
-  "version": "0.1.4",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/test-stack/harness.git"
