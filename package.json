@@ -44,7 +44,7 @@
     "cson-config": "0.1.12",
     "mocha": "^2.2.5",
     "test-stack-helpers": "1.0.3",
-    "test-stack-reporter": "0.0.2",
+    "test-stack-reporter": "1.0.0",
     "webdriverio": "2.4.5"
   }
 }
