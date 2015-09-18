@@ -2,8 +2,11 @@
 
 program = require 'commander'
 fs = require 'fs'
+path = require 'path'
 EventEmitter = require('events').EventEmitter
 testRunnerEvent = new EventEmitter()
+
+process.env.WORKSPACE = path.normalize if process.env.WORKSPACE? then process.env.WORKSPACE else __dirname + '/../../../'
 
 DEFAULT_CAPABILITIES = 'chrome'
 
@@ -36,7 +39,7 @@ testRunnerEvent.on 'wrongConfiguration', (explain) ->
   process.exit 1
 
 program
-  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+  .version(JSON.parse(fs.readFileSync(process.env.WORKSPACE + 'package.json', 'utf8')).version)
   .usage '<someTag> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
@@ -46,13 +49,12 @@ program
 program.parse process.argv
 
 # load custom config.cson
-process.config.ABSOLUTE_PATH = __dirname + '/../../..'
-process.config.CONFIG = process.config.ABSOLUTE_PATH + '/config.cson'
+configCson = process.env.WORKSPACE + 'config.cson'
 
 (
-  fs.exists process.config.CONFIG, (exists) ->
+  fs.exists configCson, (exists) ->
     missingConfigCson() if !exists
-    require('cson-config').load process.config.CONFIG
+    require('cson-config').load configCson
 
     args = program.args
     missingTestCase() unless args.length is 1

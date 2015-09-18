@@ -4,7 +4,7 @@ fs = require 'fs'
 
 find = (runBy, cb) ->
 
-  testsDirectory = "#{path.normalize __dirname + '/../../../tests/'}"
+  testsDirectory = process.env.WORKSPACE + 'tests/'
 
   files = fs.readdirSync testsDirectory
   testCases = []

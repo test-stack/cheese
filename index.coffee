@@ -11,11 +11,13 @@ dependencies =
 
 loadCapabilities = (capabilities) ->
 
-  originPathToCapabilities = "#{__dirname}/capabilities/#{capabilities}.coffee"
+  global = require './capabilities/global'
+
+  originPathToCapabilities = process.env.WORKSPACE + "node_modules/test-stack-harness/capabilities/#{capabilities}.coffee"
   return require originPathToCapabilities if fs.existsSync originPathToCapabilities
 
-  customPathToCapabilities = "#{path.normalize __dirname + '/../../capabilities/'}#{capabilities}.coffee"
-  return require customPathToCapabilities if fs.existsSync customPathToCapabilities
+  customPathToCapabilities = process.env.WORKSPACE + "capabilities/#{capabilities}.coffee"
+  return require(customPathToCapabilities)(global) if fs.existsSync customPathToCapabilities
 
   return throw new TestStackError """
   Capability #{capabilities} not found in paths
@@ -34,7 +36,7 @@ setup = (args) ->
     for nameOfHelper, fn of helper
       client[nameOfHelper] = fn
 
-  pageObjectsPath = "#{path.normalize __dirname + '/../../pageObjects/'}"
+  pageObjectsPath = process.env.WORKSPACE + 'pageObjects/'
   if fs.existsSync pageObjectsPath
     for po in fs.readdirSync pageObjectsPath
       client[path.basename po, '.coffee'] = require(pageObjectsPath+'/'+path.basename(po, '.coffee')) client, dependencies
