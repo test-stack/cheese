@@ -1,0 +1,11 @@
+language:
+  node_js
+node_js:
+  0.10.33
+notifications:
+  slack: test-stackteam:sbcUT7msOyJosFNZegjvRCi9
+branches:
+  except:
+    release
+install:
+  npm install
