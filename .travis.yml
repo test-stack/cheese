@@ -5,7 +5,7 @@ node_js:
 notifications:
   slack: test-stackteam:sbcUT7msOyJosFNZegjvRCi9
 branches:
-  except:
+  only:
     release
 install:
   npm install
