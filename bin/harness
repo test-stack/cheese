@@ -39,7 +39,6 @@ testRunnerEvent.on 'wrongConfiguration', (explain) ->
   process.exit 1
 
 program
-  .version(JSON.parse(fs.readFileSync(process.env.WORKSPACE + 'package.json', 'utf8')).version)
   .usage '<someTag> [options]'
   .option '-c, --capabilities <capability>', "for example '#{DEFAULT_CAPABILITIES}' - #{DEFAULT_CAPABILITIES} is default value"
   .option '-b, --bail', "bail after first test failure (Mochajs)"
