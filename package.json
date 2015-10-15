@@ -20,7 +20,7 @@
       "email": "rdpanek@gmail.com"
     }
   ],
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/test-stack/harness.git"
@@ -44,7 +44,7 @@
     "cson-config": "0.1.12",
     "mocha": "^2.2.5",
     "test-stack-helpers": "1.0.3",
-    "test-stack-reporter": "1.0.0",
+    "test-stack-reporter": "1.1.0",
     "webdriverio": "2.4.5"
   }
 }
