@@ -4,7 +4,7 @@ path = require 'path'
 {helpers} = require 'test-stack-helpers'
 
 dependencies =
-  exit: (client, cb) -> client.end().then cb
+  exit: (client, cb) -> client.end -> cb()
   explicitWaitMs: process.env.EXPLICIT_WAIT_MS
   errors: require './libs/errors'
 {TestStackError} = dependencies.errors
