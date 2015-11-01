@@ -31,6 +31,7 @@ module.exports = (args) ->
           compilers: "coffee:coffee-script/register"
           require: "coffee-script/register"
           timeout: args.timeout
+          bail: if args.bail then yes else no
 
         mocha.addFile tc for tc in testCases if testCases.length != 0
 
