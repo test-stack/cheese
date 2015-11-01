@@ -42,8 +42,7 @@ Our first page object will be can write name of book to input search and clicks 
 
 Let's a write `./pageObjects/amazon.coffee`
 ```javascript
-module.exports = (client, depend) ->
-  {TestError} = depend.errors
+module.exports = ->
   {expect} = require 'chai'
 
   {
@@ -66,6 +65,7 @@ module.exports = (client, depend) ->
             try
               expect(title).to.equal homePageTitle
             catch e
+              {TestError} = depend.errors
               return done new TestError e
 
             done()

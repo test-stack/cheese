@@ -37,6 +37,7 @@ module.exports = (args) ->
 
         mocha.suite.on 'pre-require', (context) ->
           context.client = dependencies.client
+          context.dependencies = dependencies
           if args.reporter is 'elastic'
             reporter.send
               harness: 'testStart'

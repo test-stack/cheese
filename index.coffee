@@ -39,7 +39,7 @@ setup = (args) ->
   pageObjectsPath = process.env.WORKSPACE + 'pageObjects/'
   if fs.existsSync pageObjectsPath
     for po in fs.readdirSync pageObjectsPath
-      client[path.basename po, '.coffee'] = require(pageObjectsPath+'/'+path.basename(po, '.coffee')) client, dependencies
+      client[path.basename po, '.coffee'] = require(pageObjectsPath+'/'+path.basename(po, '.coffee'))()
 
 
   dependencies.client = client
