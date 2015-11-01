@@ -6,7 +6,9 @@ path = require 'path'
 
 module.exports = (args) ->
 
-  dependencies = require('test-stack-harness').setup args
+  {setup, inicializePo} = require 'test-stack-harness'
+
+  dependencies = setup args
 
   safelyExitWebdriver = (cb) ->
     dependencies.exit dependencies.client, cb
@@ -38,6 +40,7 @@ module.exports = (args) ->
         mocha.suite.on 'pre-require', (context) ->
           context.client = dependencies.client
           context.dependencies = dependencies
+          context[k] = v for k, v of inicializePo().pageObjects
           if args.reporter is 'elastic'
             reporter.send
               harness: 'testStart'

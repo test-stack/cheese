@@ -24,6 +24,48 @@ loadCapabilities = (capabilities) ->
   #{originPathToCapabilities} or #{customPathToCapabilities}
   """
 
+dirPoTree = (pageObjectsPath, parent, cb) ->
+  stats = fs.lstatSync pageObjectsPath
+  poTree =
+    path: pageObjectsPath
+    name: path.basename pageObjectsPath
+    parent: parent
+
+  if stats.isDirectory()
+    poTree.type = 'folder'
+    fs.readdirSync(pageObjectsPath).map (child) ->
+      dirPoTree pageObjectsPath + '/' + child, poTree.name, (po) ->
+        cb po
+
+  else
+    poTree.type = "file";
+
+  cb poTree
+
+inicializePo = ->
+
+  pageObjectsPath = process.env.WORKSPACE + 'pageObjects'
+
+  if fs.existsSync pageObjectsPath
+
+    pageObjects = {}
+    dirPoTree pageObjectsPath, null, (po) ->
+
+      pageObjects[po.parent] = {} if pageObjects[po.parent] is undefined
+
+      if po.type is 'file' and po.parent?
+        fileWithPo = path.basename po.name,'.coffee'
+        pageObjects[po.parent][fileWithPo] = require po.path
+
+      if po.type is 'folder' and po.parent?
+        pageObjects[po.parent][po.name] = pageObjects[po.name]
+        delete pageObjects[po.name]
+
+    pageObjects
+
+
+
+
 setup = (args) ->
   capabilities = loadCapabilities args.capabilities
   capabilities['waitforTimeout'] = dependencies.explicitWaitMs
@@ -36,16 +78,11 @@ setup = (args) ->
     for nameOfHelper, fn of helper
       client[nameOfHelper] = fn
 
-  pageObjectsPath = process.env.WORKSPACE + 'pageObjects/'
-  if fs.existsSync pageObjectsPath
-    for po in fs.readdirSync pageObjectsPath
-      client[path.basename po, '.coffee'] = require(pageObjectsPath+'/'+path.basename(po, '.coffee'))()
-
-
   dependencies.client = client
 
-  return dependencies
+  dependencies
 
 module.exports = {
-  setup
+  setup: setup
+  inicializePo: inicializePo
 }
