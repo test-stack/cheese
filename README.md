@@ -1,4 +1,4 @@
-# Test stack Harness
+# [Harness](https://github.com/test-stack/harness)
 > Harness is solutions for powerfull writing and running E2E tests based on [WebdriverIO](http://webdriver.io/) and [Mochajs](http://mochajs.org/). View full [test stack](https://github.com/test-stack)
 
 ## Why use Harness
