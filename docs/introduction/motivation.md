@@ -9,6 +9,5 @@ Our goal is, show how to easily it's possible start with testing, exactly E2E te
 
 Test stack is group of recommended tools and testing methodologies. Pomůžeme vám psaní testů správně, a vyhodnocení výsledků. **Let's go! :-)**
 
-## We can start with checklist
 
 
