@@ -40,80 +40,75 @@ For example, we want write of test for buy book on Amazon. Our test will be star
 **Create first page object called Open amazon website**
 Our first page object will be can write name of book to input search and clicks on button with magnifier icon. This page object you can use, if the last test step is at home page. Page object don't include an expectation only verification unchanging state, for example title of search page.
 
-Let's a write `./pageObjects/amazon.coffee`
+Let's a write `./pageObjects/homepage/open.coffee`
 ```javascript
+{expect} = require 'chai'
 module.exports = ->
-  {expect} = require 'chai'
 
-  {
+  url = "http://www.amazon.com"
+  homePageTitle = "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more"
 
-    open: ->
+  describe "Open Amazon website", ->
 
-      url = "http://www.amazon.com"
-      homePageTitle = "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more"
+    it "Given open home page #{url}", (done) ->
+      client.url url, done
 
-      describe "Open Amazon website", ->
+    it "When wait for document ready state", (done) ->
+      client.waitForDocumentReadyState client, done
 
-        it "Given open home page #{url}", (done) ->
-          client.url url, done
+    it "Then title of home page is #{homePageTitle}", (done) ->
+      client.getTitle().then (title) ->
+        try
+          expect(title).to.equal homePageTitle
+        catch e
+          {TestError} = depend.errors
+          return done new TestError e
 
-        it "When wait for document ready state", (done) ->
-          client.waitForDocumentReadyState client, done
-
-        it "Then title of home page is #{homePageTitle}", (done) ->
-          client.getTitle().then (title) ->
-            try
-              expect(title).to.equal homePageTitle
-            catch e
-              {TestError} = depend.errors
-              return done new TestError e
-
-            done()
-  }
+        done()
 ```
 First load the dependency, TestError for describe of error and chaijs for expected value. [ChaiJS](http://chaijs.com/api/bdd/) is cool BDD / TDD assertion library. Then we defined `amazon.url` and `homePageTitle`. This page object contains describe of way, how open home page of Amazon. This describe is in `open` method. The `describe` and `it` methods is hooks of [Mochajs](http://mochajs.org/). To Harness means `describe` describe, what method `open` will be doing. Method `it` is test step and for Harness it's how will be doing. Test step `And wait for document ready state` is loaded from [test-stack-helpers](https://github.com/test-stack/helpers).
 
 **Create second page object called Search title by type**
 Our second page object will be write name of book to input search, select *Books* from select and clicks on button with magnifier icon. This page object you can use, if the last test step is at home page. Page object don't include an expectation only verification unchanging state, for example title of search page.
 
-Let's add next page object `./pageObjects/amazon.coffee`
+Let's add next page object `./pageObjects/homepage/search.coffee`
 ```javascript
-    search: (typeSearch, title) ->
+module.exports = (typeSearch, title) ->
 
-      AVAILABLE_TYPES_OF_SEARCH = [
-        'Books'
-      ]
+  AVAILABLE_TYPES_OF_SEARCH = [
+    'Books'
+  ]
 
-      expectedTitle = "Amazon.com: #{title}: #{typeSearch}"
+  expectedTitle = "Amazon.com: #{title}: #{typeSearch}"
 
-      describe "Search #{typeSearch} #{title}", ->
+  describe "Search #{typeSearch} #{title}", ->
 
-        it "Given type of search #{typeSearch} is available", (done) ->
-          return done new TestError "Type of search #{typeSearch} isn't available." if typeSearch not in AVAILABLE_TYPES_OF_SEARCH
-          done()
+    it "Given type of search #{typeSearch} is available", (done) ->
+      return done new TestError "Type of search #{typeSearch} isn't available." if typeSearch not in AVAILABLE_TYPES_OF_SEARCH
+      done()
 
-        it "And select #{typeSearch} from type of search", (done) ->
-          client.click "//select[@id='searchDropdownBox']"
-          .click "//option[contains(text(), 'Books')]", done
+    it "And select #{typeSearch} from type of search", (done) ->
+      client.click "//select[@id='searchDropdownBox']"
+      .click "//option[contains(text(), 'Books')]", done
 
-        it "And type #{title}", (done) ->
-          client.click "//input[@id='twotabsearchtextbox']"
-          .keys title, done
+    it "And type #{title}", (done) ->
+      client.click "//input[@id='twotabsearchtextbox']"
+      .keys title, done
 
-        it "When click on button with magnifier icon", (done) ->
-          client.click "div.nav-search-submit input.nav-input", done
+    it "When click on button with magnifier icon", (done) ->
+      client.click "div.nav-search-submit input.nav-input", done
 
-        it "And wait for document ready state", (done) ->
-          client.waitForDocumentReadyState client, done
+    it "And wait for document ready state", (done) ->
+      client.waitForDocumentReadyState client, done
 
-        it "Then title of home page is #{expectedTitle}", (done) ->
-          client.getTitle().then (title) ->
-            try
-              expect(title).to.equal expectedTitle
-            catch e
-              return done new TestError e
+    it "Then title of home page is #{expectedTitle}", (done) ->
+      client.getTitle().then (title) ->
+        try
+          expect(title).to.equal expectedTitle
+        catch e
+          return done new TestError e
 
-            done()
+        done()
 ```
 
 **Use page objects in test case**
@@ -125,9 +120,9 @@ module.exports = ->
 
   describe "Find Selenium WebDriver Practical Guide book", ->
 
-    client.amazon.open()
+    homepage.open()
 
-    client.amazon.search "Books", "Selenium WebDriver Practical Guide"
+    homepage.search "Books", "Selenium WebDriver Practical Guide"
 ```
 
 > Declarative writing tests are clear with high maintainability.
