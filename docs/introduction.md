@@ -1,6 +1,6 @@
 # Introduction
 
-* Motivation
+* [Motivation](https://rdpanek1.gitbooks.io/teststack/content/docs/introduction/motivation.html)
 * Ecosystem
 * Examples
 * Build statuses
