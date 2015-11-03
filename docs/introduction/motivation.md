@@ -7,7 +7,7 @@ It's a waste of effort, because **everything is already exist**.
 From the beginning the company doesn't know what all needs and comes on gradually. It's a very long way and very expensive. On the way is a very much blind trails.
 Our goal is, show how to easily it's possible start with testing, exactly E2E testings.
 
-Test stack is group of recommended tools and testing methodologies. Pomůžeme vám psaní testů správně, a vyhodnocení výsledků. **Let's go! :-)**
+Test stack is group of recommended tools and testing methodologies. We will help you correct writing tests and evaluation of results. **Let's go! :-)**
 
 
 
