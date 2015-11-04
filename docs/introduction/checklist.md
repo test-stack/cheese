@@ -61,6 +61,9 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 - Performance of infrastructure ?
 
 ## How will be a evaluate results of test ?
+- By functional acceptance criteria ?
+- By SLA ?
+- Information about performance infrastructure and tested application ? 
 
 ## What will be in the test report ?
 - Was found incident ?
