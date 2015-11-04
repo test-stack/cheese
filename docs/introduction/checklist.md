@@ -53,6 +53,12 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 - Server resource monitor ?
 - Api resource monitor ?
 - We will throughput test case manually ?
+- Test failed and passed ?
+- Impact on another part of the infrastructure ?
+- Application logs ?
+- Proxy logs ?
+- Performance of database ?
+- Performance of infrastructure ?
 
 ## How will be a evaluate results of test ?
 
