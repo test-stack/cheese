@@ -7,12 +7,19 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 ## What I'll test ?
 - Web application
 
+## Will be need for training ?
+- Git ?
+- Write of tests ?
+- Test management tools ?
+- Infrastructure of product and test environment ?
+
 ## Who will participate in the testing process ?
 - SDET
 - Testers
 - Programmers
 - QA Leader
 - Test analyst
+- Test senior analyst
 - Architects
 - DB specialist
 - Product Owner
@@ -48,3 +55,7 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 ## What will be in the test report ?
 - Was found incident ?
 - Is incident defect ?
+
+## Next software
+- Test management tools
+- Docker
