@@ -11,6 +11,8 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 - SDET
 - Testers
 - Programmers
+- QA Leader
+- Test analyst
 - Architects
 - DB specialist
 - Product Owner
