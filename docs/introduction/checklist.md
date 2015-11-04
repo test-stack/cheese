@@ -49,6 +49,10 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 - Stress test
 
 ## How will be a watch process of the test ?
+- Kibana ?
+- Server resource monitor ?
+- Api resource monitor ?
+- We will throughput test case manually ?
 
 ## How will be a evaluate results of test ?
 
