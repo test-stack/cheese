@@ -7,7 +7,7 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 ## What I'll test ?
 - Web application
 
-## Will be need for training ?
+## We will be need a training ?
 - Git ?
 - Write of tests ?
 - Test management tools ?
