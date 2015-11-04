@@ -11,23 +11,36 @@ You will be write a test that can sometimes fail and you don't know why. You wil
 - SDET
 - Testers
 - Programmers
+- Architects
+- DB specialist
 - Product Owner
 - Client
 
 ## What will be architecture and maintainability of test?
 
 ## What is the purpose of the test?
-- Type of bugs
+- Was found incident?
+- Is incident defect?
 
 ## What will be run test?
 - Jenkins
-- CLI scripts
+- CLI scripts ( manual start ) 
+- Cron
+- JMeter / Smart Meter
+- Other tool based on some hooks
 
 ## When will be run test?
-- Regresion / Smoke / E2E
+- E2E test
+- Regresion test
+- Smoke test
+- Performance test
+- Load test
+- Stress test
 
 ## How will be a watch process of the test?
 
 ## How will be a evaluate results of test?
 
 ## What will be in the test report?
+- Was found incident?
+- Is incident defect?
