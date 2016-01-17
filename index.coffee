@@ -71,7 +71,7 @@ setup = (args) ->
   capabilities['waitforTimeout'] = dependencies.explicitWaitMs
 
   client = webdriverio.remote capabilities
-  client.on 'error', (e) ->
+  client.on 'error',  ->
     client.options.waitforTimeout = 500
 
   for helper in helpers
