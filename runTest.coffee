@@ -5,8 +5,9 @@ reporter = require './node_modules/test-stack-reporter'
 path = require 'path'
 
 module.exports = (args) ->
-
   {setup, inicializePo} = require 'test-stack-harness'
+  if args.reporter is 'elastic'
+    reporter.send { harness: 'initialization' }
 
   dependencies = setup args
 
@@ -19,14 +20,13 @@ module.exports = (args) ->
       console.error err.stack
       process.exit 1
 
-  require('./libs/findTestCase').find args.runBy, (testCases) ->
+  require('./libs/findTestCase').find args.runBy, (testCases, tags) ->
     if testCases.length is 0
       console.log 'Test case has not found.'
       process.exit 0
 
     dependencies.client.init (clientErr) ->
       dependencies.client.session (sessionclientErr, sessionRes) ->
-
         mocha = new Mocha
           ui: "bdd"
           reporter: if args.reporter is 'elastic' then reporter.reporter else args.reporter
@@ -43,8 +43,9 @@ module.exports = (args) ->
           context[k] = v for k, v of inicializePo().pageObjects
           if args.reporter is 'elastic'
             reporter.send
-              harness: 'testStart'
+              harness: 'webdriverStart'
               sessionId: if !clientErr? then sessionRes.sessionId else null
+              tags: tags
               err: if clientErr? then clientErr.toString() else null
 
         mocha.suite.on 'require', (loadedTest, file) ->
