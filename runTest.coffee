@@ -24,7 +24,7 @@ module.exports = (args) ->
       console.log 'Test case has not found.'
       process.exit 0
 
-    reporter.send { harness: 'setTags', tags: tags }
+    reporter.send { harness: 'setTags', tags: tags } if args.reporter is 'elastic'
 
     dependencies.client.init (clientErr) ->
       dependencies.client.session (sessionclientErr, sessionRes) ->
