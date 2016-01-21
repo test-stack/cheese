@@ -1,12 +1,11 @@
 fs = require 'fs'
-async = require 'async'
 Mocha = require 'mocha'
-reporter = require './node_modules/test-stack-reporter'
 path = require 'path'
 
 module.exports = (args) ->
   {setup, inicializePo} = require 'test-stack-harness'
   if args.reporter is 'elastic'
+    reporter = require './node_modules/test-stack-reporter'
     reporter.send { harness: 'initialization' }
 
   dependencies = setup args
@@ -24,6 +23,8 @@ module.exports = (args) ->
     if testCases.length is 0
       console.log 'Test case has not found.'
       process.exit 0
+
+    reporter.send { harness: 'setTags', tags: tags }
 
     dependencies.client.init (clientErr) ->
       dependencies.client.session (sessionclientErr, sessionRes) ->
@@ -45,10 +46,9 @@ module.exports = (args) ->
             reporter.send
               harness: 'webdriverStart'
               sessionId: if !clientErr? then sessionRes.sessionId else null
-              tags: tags
               err: if clientErr? then clientErr.toString() else null
 
-        mocha.suite.on 'require', (loadedTest, file) ->
+        mocha.suite.on 'require', (loadedTest) ->
           suite = loadedTest()
           suite.beforeAll (done) ->
             return done()
