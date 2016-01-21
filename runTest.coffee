@@ -39,14 +39,25 @@ module.exports = (args) ->
         mocha.addFile tc for tc in testCases if testCases.length != 0
 
         mocha.suite.on 'pre-require', (context) ->
+
+          if args.list isnt undefined
+            dependencies['list'] = {}
+            for item in args.list
+              item = item.split '='
+              dependencies.list[item[0]] = item[1]
+
           context.client = dependencies.client
           context.dependencies = dependencies
           context[k] = v for k, v of inicializePo().pageObjects
+
           if args.reporter is 'elastic'
             reporter.send
               harness: 'webdriverStart'
               sessionId: if !clientErr? then sessionRes.sessionId else null
               err: if clientErr? then clientErr.toString() else null
+
+            if args.list isnt undefined
+              reporter.send { harness: 'list', title: item } for item in args.list
 
         mocha.suite.on 'require', (loadedTest) ->
           suite = loadedTest()

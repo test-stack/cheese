@@ -44,6 +44,7 @@ program
   .option '-b, --bail', "bail after first test failure (Mochajs)"
   .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [5000] (Mochajs)'
   .option '-R, --reporter <name>', "set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'"
+  .option '-l, --list <items>', 'A list', (val) -> val.split ','
 
 program.parse process.argv
 
@@ -98,7 +99,7 @@ configCson = process.env.WORKSPACE + 'config.cson'
     process.env.EXPLICIT_WAIT_MS = process.config.EXPLICIT_WAIT_MS
     runnerArgs['capabilities'] = if cap then cap else DEFAULT_CAPABILITIES
     runnerArgs['runBy'] = args[0]
-
+    runnerArgs['list'] = program.list if program.list
 
     require('../runTest.coffee')(runnerArgs)
 )
