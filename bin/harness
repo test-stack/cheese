@@ -45,6 +45,7 @@ program
   .option '-t, --timeout <ms>', 'set test-case timeout in milliseconds [5000] (Mochajs)'
   .option '-R, --reporter <name>', "set type of reporter (Mochajs) default is 'spec', or you can use reporter 'elastic'"
   .option '-l, --list <items>', 'A list', (val) -> val.split ','
+  .option '-a, --attachments [directory]', 'Directory for screenshots and DOM document when test failed'
 
 program.parse process.argv
 
@@ -100,6 +101,7 @@ configCson = process.env.WORKSPACE + 'config.cson'
     runnerArgs['capabilities'] = if cap then cap else DEFAULT_CAPABILITIES
     runnerArgs['runBy'] = args[0]
     runnerArgs['list'] = program.list if program.list
+    runnerArgs['attachments'] = program.attachments if program.attachments
 
     require('../runTest.coffee')(runnerArgs)
 )

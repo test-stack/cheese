@@ -64,7 +64,22 @@ module.exports = (args) ->
           suite.beforeAll (done) ->
             return done()
 
-        mocha.run (failures) ->
+        runner = mocha.run (failures) ->
           safelyExitWebdriver ->
             process.on 'exit', ->
               process.exit failures
+
+        runner.on 'fail', ->
+          if args.attachments isnt undefined
+            screenshot = args.attachments + Date.now() + ".png"
+            dependencies.client.saveScreenshot screenshot, (err) ->
+              if err
+                console.error (new Date).toUTCString() + ' uncaughtException:', err.message
+                console.error err.stack
+                process.exit 1
+              if args.reporter is 'elastic'
+                reporter.send
+                  harness: 'screenshot'
+                  title: screenshot
+              else
+                console.log "Screenshot saved to #{screenshot}"
